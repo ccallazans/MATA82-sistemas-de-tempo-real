@@ -2,52 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from algorithms.classes import Tarefa, Evento, Resultado
 
-
-def rate_monotonic_scheduling(tarefas, duracao_simulacao):
-    tempo_atual = 0
-    resultado = []
-    eventos = []
-    proximas_execucoes = [0] * len(tarefas)
-    tempo_restante = [0] * len(tarefas)
-
-    while tempo_atual < duracao_simulacao:
-        # Verificar liberações de tarefas
-        for i, tarefa in enumerate(tarefas):
-            if tempo_atual >= proximas_execucoes[i]:
-                eventos.append(Evento(tempo_atual, 'release', tarefa.id))
-                tempo_restante[i] = tarefa.custo
-                proximas_execucoes[i] += tarefa.periodo
-
-        # Encontrar a tarefa de maior prioridade pronta para executar
-        tarefa_atual = None
-        indice_atual = -1
-        for i, tarefa in enumerate(tarefas):
-            if tempo_restante[i] > 0:
-                if tarefa_atual is None or tarefa.prioridade < tarefa_atual.prioridade:
-                    if indice_atual != -1:
-                        # Preempção
-                        eventos.append(Evento(tempo_atual, 'preempt', tarefa_atual.id))
-                    tarefa_atual = tarefa
-                    indice_atual = i
-
-        if tarefa_atual:
-            if not resultado or resultado[-1].id != tarefa_atual.id:
-                eventos.append(Evento(tempo_atual, 'start', tarefa_atual.id))
-                resultado.append(Resultado(tarefa_atual.id, tempo_atual, tempo_atual + 1))
-            else:
-                resultado[-1] = Resultado(resultado[-1].id, resultado[-1].inicio, tempo_atual + 1)
-            
-            tempo_restante[indice_atual] -= 1
-            
-            if tempo_restante[indice_atual] == 0:
-                eventos.append(Evento(tempo_atual + 1, 'finish', tarefa_atual.id))
-
-            tempo_atual += 1
-        else:
-            tempo_atual = min(t for t in proximas_execucoes if t > tempo_atual)
-
-    return resultado, eventos
-
 def criar_grafico_gantt(resultado, tarefas, eventos):
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 12), sharex=True, gridspec_kw={'height_ratios': [3, 1]})
     cores = plt.cm.get_cmap('Set3')(np.linspace(0, 1, len(tarefas)))
@@ -111,23 +65,3 @@ def criar_grafico_gantt(resultado, tarefas, eventos):
 
     plt.tight_layout()
     plt.show()
-
-# Exemplo de uso
-tarefas = [
-    Tarefa(1, 1, 100),  # Tarefa 1: Custo = 1, Período = 4
-    Tarefa(2, 2, 100),  # Tarefa 2: Custo = 2, Período = 6
-    Tarefa(3, 1, 100),  # Tarefa 3: Custo = 1, Período = 8
-]
-
-duracao_simulacao = 100  # Simula por 24 unidades de tempo
-resultado, eventos = rate_monotonic_scheduling(tarefas, duracao_simulacao)
-criar_grafico_gantt(resultado, tarefas, eventos)
-
-# Verificação de escalonabilidade
-utilizacao = sum(tarefa.custo / tarefa.periodo for tarefa in tarefas)
-n = len(tarefas)
-limite_utilizacao = n * (2**(1/n) - 1)
-
-print(f"Utilização total: {utilizacao:.2f}")
-print(f"Limite de utilização RMS: {limite_utilizacao:.2f}")
-print(f"O conjunto de tarefas é {'escalonável' if utilizacao <= limite_utilizacao else 'não escalonável'} pelo RMS.")
