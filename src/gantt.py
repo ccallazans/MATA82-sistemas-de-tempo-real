@@ -17,7 +17,7 @@ def criar_grafico_gantt(resultado, tarefas, eventos):
     ax1.set_ylim(0, len(tarefas))
     ax1.set_yticks(range(len(tarefas)))
     ax1.set_yticklabels([f'T{t.id} (C={t.custo},P={t.periodo})' for t in tarefas])
-    ax1.set_title('Escalonamento Rate Monotonic - Gráfico de Gantt')
+    ax1.set_title('Escalonamento - Gráfico de Gantt')
     ax1.grid(True)
 
     # Gráfico de Eventos com tempos exatos
