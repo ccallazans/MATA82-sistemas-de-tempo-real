@@ -57,9 +57,9 @@ def criar_grafico_gantt(resultado, tarefas, eventos):
     from matplotlib.lines import Line2D
     legend_elements = [
         Line2D([0], [0], marker='v', color='w', label='Release', markerfacecolor='g', markersize=10),
-        Line2D([0], [0], marker='^', color='w', label='Start', markerfacecolor='b', markersize=10),
-        Line2D([0], [0], marker='o', color='w', label='Finish', markerfacecolor='r', markersize=10),
-        Line2D([0], [0], marker='X', color='w', label='Preempt', markerfacecolor='m', markersize=10)
+        Line2D([0], [0], marker='^', color='w', label='Início', markerfacecolor='b', markersize=10),
+        Line2D([0], [0], marker='o', color='w', label='Fim', markerfacecolor='r', markersize=10),
+        Line2D([0], [0], marker='X', color='w', label='Preempção', markerfacecolor='m', markersize=10)
     ]
     ax2.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=4)
 
