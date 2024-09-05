@@ -10,3 +10,9 @@ class Evento:
         self.tempo = tempo
         self.tipo = tipo  # 'release', 'start', 'finish', 'preempt'
         self.tarefa_id = tarefa_id
+
+class Resultado:
+    def __init__(self, id, inicio, fim):
+        self.id = id
+        self.inicio = inicio  # 'release', 'start', 'finish', 'preempt'
+        self.fim = fim
