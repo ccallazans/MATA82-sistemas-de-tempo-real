@@ -2,6 +2,7 @@ import os
 import argparse
 from reader import read_csv
 from algorithms.rate_monotonic import rate_monotonic
+from gantt import criar_grafico_gantt
 
 def main():
     parser = argparse.ArgumentParser(description="Escolha o algoritmo de escalonamento e forneça o arquivo CSV de entrada.")
@@ -19,10 +20,14 @@ def main():
     
     tasks = read_csv(file_path)
     
-
     if algorithm == 'rm':
-        print("Rate monotonic")
-        rate_monotonic(tasks)
+        output_file_name = os.path.splitext(args.file)[0] + "-saida.csv"
+        output_file_path = os.path.join(os.path.dirname(__file__), '../data/saida/', output_file_name)
+        resultado, tarefas, eventos = rate_monotonic(tasks, output_file_path)
+        # print(resultado)
+        # print(tarefas)
+        # print(eventos)
+        criar_grafico_gantt(resultado, tarefas, eventos)
 
 if __name__ == "__main__":
     main()
