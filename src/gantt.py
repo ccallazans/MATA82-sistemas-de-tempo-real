@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from algorithms.classes import Tarefa, Evento, Resultado
+import matplotlib as mpl
+from algorithms.classes import Resultado
+mpl.use('TkAgg')
 
 def criar_grafico_gantt(resultado, tarefas, eventos):
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 12), sharex=True, gridspec_kw={'height_ratios': [3, 1]})
