@@ -10,28 +10,24 @@ from datetime import timedelta
 from .classes import Tarefa, Evento, Resultado
 
 def edf(tarefas, output_file_path):
-  # print(tarefas)
-  # print('aciona edf')
-
   # Cria uma matriz, com orientação baseada no índice
   tasks = pd.DataFrame(tarefas)
-  tasks['deadline'] = tasks['Periodo']
-  tasks['current_capacity'] = tasks['Custo']
-  tasks['current_deadline'] = tasks['deadline']
+  tasks['Deadline'] = tasks['Periodo']
+  tasks['Custo_Atual'] = tasks['Custo']
+  tasks['Deadline_Atual'] = tasks['Deadline']
 
   # Lista para armazenar os resultados
   results = []
 
   for i in range(np.lcm.reduce(tasks.Periodo)):
-    # Consulta "tasks" que já foram completadas
-    left_tasks = tasks[tasks['current_capacity'] > 0]
+    left_tasks = tasks[tasks['Custo_Atual'] > 0]
 
     if len(left_tasks) > 0:
         # Encontra "task" com "deadline" mais próximo
-        top_task = left_tasks.sort_values('current_deadline').index[0]
+        top_task = left_tasks.sort_values('Deadline_Atual').index[0]
 
         # Decrementa o "capacity" da "task" atual
-        tasks.loc[top_task, 'current_capacity'] -= 1
+        tasks.loc[top_task, 'Custo_Atual'] -= 1
 
         if 0 < i and results[-1]['task'] == top_task and results[-1]['end'] == i:
           # Caso a "task" atual é mesma que a anterior, atuliza "end" e "length"
@@ -54,10 +50,8 @@ def edf(tarefas, output_file_path):
 
     # Atualiza the "capacity" e o "deadline"
     arrived = tasks[(i + 1) % tasks['Periodo'] == 0].index
-    tasks.loc[arrived, 'current_capacity'] = tasks.loc[arrived, 'Custo']
-    tasks.loc[arrived, 'current_deadline'] = tasks.loc[arrived, 'deadline'] + i + 2
-
-  # print(results)
+    tasks.loc[arrived, 'Custo_Atual'] = tasks.loc[arrived, 'Custo']
+    tasks.loc[arrived, 'Deadline_Atual'] = tasks.loc[arrived, 'Deadline'] + i + 2
 
   # Converte a lista de dicionários para um DataFrame
   results_df = pd.DataFrame(results)
